@@ -116,7 +116,7 @@ class LDStickerView: UIView, UIGestureRecognizerDelegate, LDStickerViewDelegate 
         _rotateView = UIImageView(frame: CGRect(x: bounds.size.width - _globalInset*2, y: bounds.size.height - _globalInset*2, width: _globalInset*2, height: _globalInset*2))
         _rotateView.autoresizingMask = [.flexibleLeftMargin, .flexibleTopMargin]
         _rotateView.backgroundColor = UIColor.clear
-        _rotateView.image = UIImage(named: "expand")
+        _rotateView.image = UIImage(named: "rotation")
         _rotateView.isUserInteractionEnabled = true
         addSubview(_rotateView)
         
@@ -126,7 +126,7 @@ class LDStickerView: UIView, UIGestureRecognizerDelegate, LDStickerViewDelegate 
         _resizeView.backgroundColor = UIColor.clear
         _resizeView.isUserInteractionEnabled = true
         _resizeView.image = UIImage(named: "expand")
-        //addSubview(_resizeView)
+        addSubview(_resizeView)
 
         let moveGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(LDStickerView.moveGesture(_:)))
         addGestureRecognizer(moveGesture)
@@ -137,7 +137,10 @@ class LDStickerView: UIView, UIGestureRecognizerDelegate, LDStickerViewDelegate 
         let singleTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(LDStickerView.singleTap(_:)))
         _closeView.addGestureRecognizer(singleTap)
         
-  
+        let panResizeGesture:UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(LDStickerView.resizeTranslate(_:)))
+        
+        panResizeGesture.minimumPressDuration = 0
+        _resizeView.addGestureRecognizer(panResizeGesture)
         let panRotateGesture:UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(LDStickerView.rotateViewPanGesture(_:)))
         
         panRotateGesture.minimumPressDuration = 0
@@ -346,39 +349,54 @@ class LDStickerView: UIView, UIGestureRecognizerDelegate, LDStickerViewDelegate 
     }
     
     @objc func resizeTranslate(_ recognizer: UIPanGestureRecognizer){
-        _touchLocation = recognizer.location(in: superview)
-        //Reforming touch location to it's Identity transform.
-        _touchLocation = CGPointRorate(_touchLocation, basePoint: CGRectGetCenter(frame),angle: -CGAffineTransformGetAngle(transform))
+        _touchLocation =  recognizer.location(in: superview)
+        let btnPlainTextBox = self._contentView as? UIButton
+        let label = btnPlainTextBox?.titleLabel
+        
+        let c: CGPoint = CGRectGetCenter(frame);
         if (recognizer.state == UIGestureRecognizerState.began){
-            if responds(to: #selector(LDStickerViewDelegate.stickerViewDidBeginEditing(_:))){
+            _deltaAngle = atan2(_touchLocation.y - c.y, _touchLocation.x - c.x) - CGAffineTransformGetAngle(transform)
+            if(self._contentView as? UIButton != nil){
+                initialFontSize = (label?.font.pointSize)!
+            }
+            _initialBounds = bounds;
+            _initialDistance = CGPointGetDistance(c, point2: _touchLocation);
+            
+            if (responds(to: #selector(LDStickerViewDelegate.stickerViewDidBeginEditing(_:)))){
                 _delegate?.stickerViewDidBeginEditing!(self)
             }
         } else if (recognizer.state == UIGestureRecognizerState.changed){
-            let wChange: CGFloat = (_prevPoint.x - _touchLocation.x); //Slow down increment
-            let hChange: CGFloat = (_touchLocation.y - _prevPoint.y); //Slow down increment
-            let t: CGAffineTransform = transform
-            transform = CGAffineTransform.identity
-            var scaleRect:CGRect = CGRect(x: frame.origin.x, y: frame.origin.y, width: max(frame.size.width + (wChange*2), 1 + _globalInset*2), height: max(frame.size.height + (hChange*2), 1 + _globalInset*2))
-           
-            /*var scaleRect:CGRect
-            if (frame.size.width >= frame.size.height){
-            scaleRect = CGRectMake(frame.origin.x, frame.origin.y, max(frame.size.width + (hChange*2), 1 + _globalInset*2), max(frame.size.height + (hChange*2), 1 + _globalInset*2))
-            } else {
-            scaleRect = CGRectMake(frame.origin.x, frame.origin.y, max(frame.size.width + (wChange*2), 1 + _globalInset*2), max(frame.size.height + (wChange*2), 1 + _globalInset*2))
-            }*/
-            scaleRect = CGRectSetCenter(scaleRect, center: center)
-            frame = scaleRect
-            transform = t
-          
+            //            let ang:CGFloat = atan2(_touchLocation.y - c.y, _touchLocation.x - c.x)
+            //            let angleDiff:CGFloat = _deltaAngle - ang
+            //            transform = CGAffineTransform(rotationAngle: -angleDiff)
+            //            setNeedsDisplay()
+            let scale: CGFloat = sqrt(CGPointGetDistance(c, point2: _touchLocation) / _initialDistance)
+            let scaleRect: CGRect = CGRectScale(_initialBounds, wScale: scale, hScale: scale);
+            if (scaleRect.size.width >= (1 + _globalInset*2) && scaleRect.size.height >= (1 + _globalInset*2)){
+                bounds = scaleRect
+            }
+            
+            if(self._contentView as? UIButton != nil){
+                let scaleVal = Float((scaleRect.size.width+scaleRect.size.height)/2) - Float((_initialBounds.size.height+_initialBounds.size.width)/2)
+                label?.font = UIFont.systemFont(ofSize:CGFloat(initialFontSize))
+                
+                //                let myAttribute = [ NSAttributedStringKey.font: UIFont.systemFont(ofSize:CGFloat(initialFontSize)+(CGFloat(scaleVal)/3)) ]
+                let myAttribute = [ NSAttributedStringKey.font: UIFont.systemFont(ofSize:CGFloat(initialFontSize)) ]
+                let myString = NSMutableAttributedString(string:(label?.text)!, attributes: myAttribute )
+                label?.lineBreakMode = .byWordWrapping
+                btnPlainTextBox?.setAttributedTitle(myString, for: .normal)
+                
+            }
+            
             if responds(to: #selector(LDStickerViewDelegate.stickerViewDidChangeEditing(_:))) {
                 _delegate?.stickerViewDidChangeEditing!(self)
             }
-        }else if (recognizer.state == UIGestureRecognizerState.ended){
+        } else if (recognizer.state == UIGestureRecognizerState.ended){
             if responds(to: #selector(LDStickerViewDelegate.stickerViewDidEndEditing(_:))){
                 _delegate?.stickerViewDidEndEditing!(self)
             }
         }
-        _prevPoint = _touchLocation;
+        
     
     }
 
@@ -404,14 +422,14 @@ class LDStickerView: UIView, UIGestureRecognizerDelegate, LDStickerViewDelegate 
             let angleDiff:CGFloat = _deltaAngle - ang
             transform = CGAffineTransform(rotationAngle: -angleDiff)
             setNeedsDisplay()
-            let scale: CGFloat = sqrt(CGPointGetDistance(c, point2: _touchLocation) / _initialDistance)
-            let scaleRect: CGRect = CGRectScale(_initialBounds, wScale: scale, hScale: scale);
-            if (scaleRect.size.width >= (1 + _globalInset*2) && scaleRect.size.height >= (1 + _globalInset*2)){
-                bounds = scaleRect
-            }
+//            let scale: CGFloat = sqrt(CGPointGetDistance(c, point2: _touchLocation) / _initialDistance)
+//            let scaleRect: CGRect = CGRectScale(_initialBounds, wScale: scale, hScale: scale);
+//            if (scaleRect.size.width >= (1 + _globalInset*2) && scaleRect.size.height >= (1 + _globalInset*2)){
+//                bounds = scaleRect
+//            }
            
             if(self._contentView as? UIButton != nil){           
-                let scaleVal = Float((scaleRect.size.width+scaleRect.size.height)/2) - Float((_initialBounds.size.height+_initialBounds.size.width)/2)
+//                let scaleVal = Float((scaleRect.size.width+scaleRect.size.height)/2) - Float((_initialBounds.size.height+_initialBounds.size.width)/2)
                 label?.font = UIFont.systemFont(ofSize:CGFloat(initialFontSize))
                 
 //                let myAttribute = [ NSAttributedStringKey.font: UIFont.systemFont(ofSize:CGFloat(initialFontSize)+(CGFloat(scaleVal)/3)) ]
