@@ -11,7 +11,6 @@
 		AE1DE66F2048058600833D82 /* UIFont+MemobirdEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1DE66E2048058600833D82 /* UIFont+MemobirdEditor.m */; };
 		AE1DE6752048353C00833D82 /* FontCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1DE6742048353C00833D82 /* FontCollectionViewCell.m */; };
 		AE532BCC204518A500B0AB87 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AE532BCB204518A500B0AB87 /* AppDelegate.m */; };
-		AE532BCF204518A500B0AB87 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE532BCE204518A500B0AB87 /* ViewController.m */; };
 		AE532BD2204518A500B0AB87 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE532BD0204518A500B0AB87 /* Main.storyboard */; };
 		AE532BD4204518A500B0AB87 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE532BD3204518A500B0AB87 /* Assets.xcassets */; };
 		AE532BD7204518A500B0AB87 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE532BD5204518A500B0AB87 /* LaunchScreen.storyboard */; };
@@ -94,8 +93,6 @@
 		AE532BC7204518A500B0AB87 /* Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Editor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE532BCA204518A500B0AB87 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		AE532BCB204518A500B0AB87 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		AE532BCD204518A500B0AB87 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		AE532BCE204518A500B0AB87 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		AE532BD1204518A500B0AB87 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		AE532BD3204518A500B0AB87 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AE532BD6204518A500B0AB87 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -208,8 +205,6 @@
 			children = (
 				AE532BCA204518A500B0AB87 /* AppDelegate.h */,
 				AE532BCB204518A500B0AB87 /* AppDelegate.m */,
-				AE532BCD204518A500B0AB87 /* ViewController.h */,
-				AE532BCE204518A500B0AB87 /* ViewController.m */,
 				AE532CAF2045682600B0AB87 /* EditorVC.h */,
 				AE532CB02045682600B0AB87 /* EditorVC.m */,
 				AE6CD2A42060F2B700DC97EB /* Editor-Bridging-Header.h */,
@@ -511,7 +506,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE532BCF204518A500B0AB87 /* ViewController.m in Sources */,
 				AE1DE6752048353C00833D82 /* FontCollectionViewCell.m in Sources */,
 				AE532CB12045682600B0AB87 /* EditorVC.m in Sources */,
 				AE6CD2A32060F26400DC97EB /* LDStickerView.swift in Sources */,
@@ -625,7 +619,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SWIFT_OBJC_BRIDGING_HEADER = "/Users/gaganjoshi/Desktop/14Joy EDitorBox/Joy16 Editor/Editor/Editor/Editor-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -675,7 +669,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OBJC_BRIDGING_HEADER = "/Users/gaganjoshi/Desktop/14Joy EDitorBox/Joy16 Editor/Editor/Editor/Editor-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -692,7 +686,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Oottru.Editor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "/Users/gaganjoshi/Desktop/14Joy EDitorBox/Joy16 Editor/Editor/Editor/Editor-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "/Users/gaganjoshi/Desktop/EditorPOC/Editor/Editor-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -710,7 +704,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Oottru.Editor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "/Users/gaganjoshi/Desktop/14Joy EDitorBox/Joy16 Editor/Editor/Editor/Editor-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "/Users/gaganjoshi/Desktop/EditorPOC/Editor/Editor-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

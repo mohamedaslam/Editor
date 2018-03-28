@@ -15,10 +15,7 @@
 
 @interface EditorVC ()<UITextViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,NSLayoutManagerDelegate,UIGestureRecognizerDelegate>
 {
-  //  LDStickerView * sticker;
-
-//    UIScrollView *scrollView;
-    
+   
     ///////Navigation Bar
     UIView *navigatonBarview;
     UILabel *titlelabel;
@@ -26,7 +23,6 @@
     
     //CustomView
     UIButton *selectedTextBoxButton;
-   
     UILabel *placeholderLabel;
     
     //Font slider
@@ -49,19 +45,15 @@
     BOOL rightalignflag;
     NSIndexPath *selectedFontCollectionIndexPath;
     
-    
     ////////TEXTBOXDOUBLECLICK
     UIImageView *picimageView;
-//    UIButton *btnImageWithText;
     UIButton *btnPlainTextBox;
     UIButton *doubleclickdonebtn;
-//    var stickerView = LDStickerView()
 
 }
 @property (nonatomic, strong) LDStickerView *selectedView;
 @property (nonatomic,strong)  UIScrollView *scrollView;
 @property (nonatomic,strong) UIButton *btnImageWithText;;
-//@property (nonatomic, strong) LDStickerView *getSelectedViwe;
 //CustomVIews
 @property (strong, nonatomic) UITextView *backgroundTextView;
 @property (strong,nonatomic) UITextView *textViewEditTextBox;
@@ -84,15 +76,12 @@
 @property (strong, nonatomic) UIButton *btnLeftAlign;
 @property (strong, nonatomic) UIButton *btnCenterAlign;
 @property (strong, nonatomic) UIButton *btnRightAlign;
-
 @property (nonatomic, assign) BOOL typingAttributesInProgress;
-
 @property (assign) UITapGestureRecognizer *tapRecognizer;
 @property(nonatomic) NSRange selectedRange;
 @end
 
 @implementation EditorVC
-
 
 #pragma mark - ViewController
 
@@ -104,13 +93,11 @@
     [self menubuttonsBG];
     [self customAlignButtonsBG];
     [self sliderBG];
-    
     [self scrollviewBG];
     [self textviewBG];
     [self completebtnBG];
     [self collectionviewBG];
     [self collectionviewTextBoxBG];
-    //[self showEditTextBox];
     _vwTextOptions.hidden = YES;
     UITapGestureRecognizer *tapDescription = [[UITapGestureRecognizer alloc]
                       initWithTarget:self action:@selector(tapDescription:)];
@@ -128,15 +115,12 @@
 }
 - (void)StickerImageMoveNotification:(NSNotification *)notification
 {
-    NSLog(@"%@ fdghdfghdfghdfghdfgupdated",notification.object[@"viewSize"]); // gives your dictionary
     int Lastimageyposition = [notification.object[@"viewSize"]intValue];
     int LastimageHeight = [notification.object[@"viewHeight"]intValue];
     int sumLastypositionandHeight = Lastimageyposition + LastimageHeight;
-    NSLog(@"%@ viewHeightviewHeight",notification.object[@"viewHeight"]);
     if(sumLastypositionandHeight + 120 > self.scrollView.contentSize.height)
     {
         self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width, self.scrollView.contentSize.height + 200);
-        NSLog(@"Increased Heoight");
     }
 }
 
@@ -145,48 +129,28 @@
     int Lastimageyposition = [notification.object[@"viewSize"]intValue];
     int LastimageHeight = [notification.object[@"viewHeight"]intValue];
     int sumLastypositionandHeight = Lastimageyposition + LastimageHeight;
-    NSLog(@"%@ viewHeightviewHeight",notification.object[@"viewHeight"]);
     int scrollviewcontentIntvalue = self.scrollView.contentSize.height;
-    int getcontentsizevalue = scrollviewcontentIntvalue;
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     CGFloat floatReducedifferencescrolllastimage = 0.0 ;
-
     int differencescrolllastimage = scrollviewcontentIntvalue - sumLastypositionandHeight;
     if(differencescrolllastimage > 60)
     {
         int Reducedifferencescrolllastimage = differencescrolllastimage - 10;
          floatReducedifferencescrolllastimage = (CGFloat)Reducedifferencescrolllastimage;
         self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width, self.scrollView.contentSize.height - floatReducedifferencescrolllastimage);
-        // getting an NSString
         NSString *myString = [prefs stringForKey:@"SavescrollcontentHeightt"];
-        if([myString length] == 0)
-        {
-            
-        }else
-        {
+        if([myString length] == 0){
+        }else{
             NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-//            // saving an NSString
-//            [prefs setObject:@"TextToSave" forKey:@"keyToLookupString"];
-//            // saving an NSInteger
-//            [prefs setInteger:42 forKey:@"integerKey"];
-//            // saving a Double
-//            [prefs setDouble:3.1415 forKey:@"doubleKey"];
-            // saving a Float
             [prefs setFloat:floatReducedifferencescrolllastimage forKey:@"SavescrollcontentHeightt"];
-            // This is suggested to synch prefs, but is not needed (I didn't put it in my tut)
             [prefs synchronize];
-
         }
-    }else
-    {
+    }else{
         NSString *myString = [prefs stringForKey:@"SavescrollcontentHeightt"];
-        if([myString length] == 0)
-        {
+        if([myString length] == 0){
             CGFloat myFloat = [prefs floatForKey:@"SavescrollcontentHeightt"];
             CGFloat NEWscrollviewcontentIntvalue = myFloat;
-            if(NEWscrollviewcontentIntvalue == floatReducedifferencescrolllastimage)
-            {
-                
+            if(NEWscrollviewcontentIntvalue == floatReducedifferencescrolllastimage){
             }else{
                 [prefs setFloat:floatReducedifferencescrolllastimage forKey:@"SavescrollcontentHeightt"];
                 CGPoint bottomOffset = CGPointMake(0, self.scrollView.contentSize.height - self.scrollView.bounds.size.height + self.scrollView.contentInset.bottom + 120);
@@ -200,6 +164,8 @@
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"reduceScrollviewHeightNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"StickerImageMoveNotification" object:nil];
 }
 #pragma mark - UI BackGroundViews
 
@@ -290,7 +256,7 @@
 - (void) menubuttonsBG {
      ////////Text Button
     UIButton *TextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [TextButton addTarget:self action:@selector(ExpandbuttonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    [TextButton addTarget:self action:@selector(TextBoxExpandbuttonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [TextButton.heightAnchor constraintEqualToConstant:40].active = true;
     [TextButton.widthAnchor constraintEqualToConstant:40].active = true;
     UIImage *textImage = [UIImage imageNamed:@"iconFont.png"];
@@ -301,7 +267,7 @@
     [CameraButton addTarget:self action:@selector(camerabuttonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [CameraButton.heightAnchor constraintEqualToConstant:40].active = true;
     [CameraButton.widthAnchor constraintEqualToConstant:40].active = true;
-    UIImage *camImage = [UIImage imageNamed:@"iconPreview.png"];
+    UIImage *camImage = [UIImage imageNamed:@"iconText.png"];
     [CameraButton setImage:camImage forState:UIControlStateNormal];
    
     ////////Material Button
@@ -309,7 +275,7 @@
     [Materialbutton addTarget:self action:@selector(materialbuttonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [Materialbutton.heightAnchor constraintEqualToConstant:40].active = true;
     [Materialbutton.widthAnchor constraintEqualToConstant:40].active = true;
-    UIImage *materialImage = [UIImage imageNamed:@"iconText.png"];
+    UIImage *materialImage = [UIImage imageNamed:@"iconPreview.png"];
     [Materialbutton setImage:materialImage forState:UIControlStateNormal];
     
     ////////Exapnd Button
@@ -420,8 +386,6 @@
 {
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     [flowLayout setItemSize:CGSizeMake(80, 80)];
-//    [flowLayout setMinimumLineSpacing:1];
-//    [flowLayout setMinimumInteritemSpacing:1];
     [flowLayout setSectionInset:UIEdgeInsetsMake(5, 5, 5, 5)];
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionHorizontal];
     textBoxCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0.0, 8, _vwTextBoxOption.frame.size.width, _vwTextBoxOption.frame.size.height-24) collectionViewLayout:flowLayout];
@@ -438,8 +402,6 @@
     _vwEditTextBox.backgroundColor = [UIColor lightGrayColor];
     [self.view addSubview:_vwEditTextBox];
     self.textViewEditTextBox = [[UITextView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width-50,self.scrollView.contentSize.height)];
-//    [textViewEditTextBox setDelegate:self];
-//    self.textViewEditTextBox.delegate = self;
     [self.textViewEditTextBox setDelegate:self];
     [self.textViewEditTextBox.layoutManager setDelegate:self];
     [self.textViewEditTextBox setReturnKeyType:UIReturnKeyDone];
@@ -456,24 +418,6 @@
     [_btnCompleteDone setImage:doneimage forState:UIControlStateNormal];
     [_btnCompleteDone addTarget:self action:@selector(DoneCompletebuttonClicked:)forControlEvents:UIControlEventTouchUpInside];
     [_vwEditTextBox addSubview:_btnCompleteDone];
-   // _vwEditTextBox.hidden = YES;
-//    vwEditTextBox.backgroundColor = UIColor.lightGray     //give color to the view
-//    self.view.addSubview(vwEditTextBox)
-//    self.textViewEditTextBox = UITextView()
-//    self.textViewEditTextBox.delegate = self
-//    self.textViewEditTextBox.allowsEditingTextAttributes = true
-//    self.textViewEditTextBox.backgroundColor = UIColor.gray
-//    self.textViewEditTextBox.font = .systemFont(ofSize: 18)
-//    self.textViewEditTextBox.frame = CGRect(x:0,y:0,width:self.view.frame.size.width-50, height:self.scrollView.contentSize.height)
-//    self.textViewEditTextBox.font = UIFont(name : selectedFontName, size:17)
-//    self.vwEditTextBox.addSubview(textViewEditTextBox)
-//    self.view.bringSubview(toFront: self.vwEditTextBox)
-//    btnComplete = UIButton(frame: CGRect(x: textViewEditTextBox.frame.size.width+10, y: 10, width: 40, height: 40))
-//    let doneimage = UIImage(named: "ico_complete_unchecked") as UIImage?
-//    btnComplete.setImage(doneimage, for: .normal)
-//    btnComplete.addTarget(self, action:#selector(self.Donecompleteboxbtn), for: .touchUpInside)
-//    vwEditTextBox.addSubview(btnComplete)
-//    vwEditTextBox.isHidden = true
 }
 #pragma mark - collection view delegate methods
 
@@ -515,13 +459,11 @@
     {
         NSString *cellIdentifier = @"cellTextBox";
         UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdtextBox, for: indexPath)
         // Checking for plain textbox
         if(indexPath.row == 0){
             if(cell.contentView.subviews.count==0){
                 UILabel *plainText = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 80, 80)];
                 plainText.text =@"TEXTT";
-                // plainText.text = textBoxImagesArray[indexPath.row]
                 [cell.contentView addSubview:plainText];
                
             }
@@ -532,9 +474,6 @@
                 imgTextBoxItem.contentMode = UIViewContentModeScaleAspectFit;
                 [cell.contentView addSubview:imgTextBoxItem];
                 imgTextBoxItem.image = [UIImage imageNamed:[textBoxImagesArray objectAtIndex:indexPath.row]];
-
-               // imgTextBoxItem.image = UIImage(named: textBoxImagesArray[indexPath.row])
-               
             }
         }
         return cell;
@@ -550,8 +489,7 @@
     selectedFontCollectionIndexPath = indexPath;
     for (UICollectionViewCell *cell in [fontCollectionView visibleCells]) {
                NSIndexPath *indexPath = [fontCollectionView indexPathForCell:cell];
-        if(indexPath == selectedFontCollectionIndexPath)
-        {
+        if(indexPath == selectedFontCollectionIndexPath){
             cell.backgroundColor = [UIColor darkGrayColor];
         }else{
             cell.backgroundColor = [UIColor whiteColor];
@@ -560,36 +498,11 @@
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     [self applyFontAttributesToSelectedRangeWithBoldTrait:nil italicTrait:nil fontName:[fontArray objectAtIndex:indexPath.row] fontSize:nil];
      }
-    if(collectionView == textBoxCollectionView)
-    {
+    if(collectionView == textBoxCollectionView){
          NSMutableAttributedString *titleString = [[NSMutableAttributedString alloc] initWithString:@"Double Tap to edit"];
-       // [UIImage imageWithContentsOfFile:textBoxImagesArray[indexPath.row]]
-        UIImage *myImage = [UIImage imageNamed: textBoxImagesArray[indexPath.row]];;
-
         [self stickerviewBG:(UIImage *)textBoxImagesArray[indexPath.row] : (NSAttributedString*)titleString];
     }
 }
-
-
--(void)dragzoomroatateview:(UIImage *)img : (NSString*)imageName : (int)type : (NSAttributedString*)attributedString
-{
-    
-    self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width, self.scrollView.contentSize.height);
-    self.backgroundTextView.contentSize = CGSizeMake(self.backgroundTextView.frame.size.width, self.scrollView.contentSize.height);
-    UIImage *image = [UIImage imageNamed:@"iconMemobird.png"];
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-    imageView.contentMode = UIViewContentModeScaleAspectFill;
-//    sticker = [[LDStickerView alloc]initWithFrame:CGRectMake(10, 120, 300, 300)];
-//    [sticker addSubview:imageView];
-//    [self.view addSubview:sticker];
-//    
-//    stickerView = LDStickerView(frame: CGRect(x: (self.scrollView.contentSize.width-calcWidth)/2, y: self.scrollView.contentOffset.y+200, width: calcWidth, height: calcHeight))
-//    
-//    stickerView.accessibilityIdentifier = "drag"
-//    let doubleTap = UITapGestureRecognizer(target: self, action: #selector(textBoxDoubleTapped))
-//    doubleTap.numberOfTapsRequired = 2
-}
-
 #pragma mark - Gesture -
 
 - (void) tapDescription:(UIGestureRecognizer *)gr {
@@ -666,9 +579,6 @@
     }
     if(textView == _textViewEditTextBox){
         
-        //selectedFont = selectedTextBoxButton.titleLabel?.font
-      //  [UIFont fontWithName:fontArray[indexPath.row] size:25.0]
-      
         NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
         paragraph.lineBreakMode = NSLineBreakByWordWrapping;
         NSDictionary *attributes = @{NSFontAttributeName : self.btnImageWithText.titleLabel.font,
@@ -677,23 +587,12 @@
         CGRect rect = [self.btnImageWithText.titleLabel.text boundingRectWithSize:constrainedSize
                                                  options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
                                               attributes:attributes context:nil];
-        NSLog(@"i%",rect);
-        NSLog(@"i%",self.btnImageWithText.bounds.size.height);
-        NSLog(@"RECTTT  TOO MUCH");
-
-        
         if (rect.size.height + 100> self.btnImageWithText.bounds.size.height) {
-            NSLog(@"TOO MUCH");
             self.vwEditTextBox.hidden = YES;
             _btnFormat.hidden = NO;
             _btnFont.hidden = NO;
-            
-            
             NSMutableAttributedString *titleString = [[NSMutableAttributedString alloc] initWithString:_textViewEditTextBox.text];
             [selectedTextBoxButton setAttributedTitle:titleString forState:UIControlStateNormal];
-            //    let myAttribute = [ NSAttributedStringKey.font: selectedFont ]
-            //    let myString = NSMutableAttributedString(string:textViewEditTextBox.text, attributes: myAttribute )
-            //    selectedTextBoxButton.setAttributedTitle(myString, for: .normal)
             self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width, self.scrollView.contentSize.height);
             CGRect customTabBarframe = self.customTabBarView.frame;
             customTabBarframe.origin.y = self.view.frame.size.height-60;
@@ -709,7 +608,6 @@
             
             UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
                 
-                //do something when click button
             }];
             [alert addAction:okAction];
             [self presentViewController:alert animated:YES completion:nil];
@@ -718,11 +616,6 @@
             NSMutableAttributedString *titleString = [[NSMutableAttributedString alloc] initWithString:_textViewEditTextBox.text];
             [selectedTextBoxButton setAttributedTitle:titleString forState:UIControlStateNormal];
         }
-//        [btnImageWithText setAttributedTitle:titleString forState:UIControlStateNormal];
-//        NSAttributedString *attribute = [NSAttributedString]
-//        let myAttribute = [ NSAttributedStringKey.font: selectedFont ]
-//        let myString = NSMutableAttributedString(string:textViewEditTextBox.text, attributes: myAttribute )
-//        selectedTextBoxButton.setAttributedTitle(myString, for: .normal)
     }
 }
 - (CGFloat)layoutManager:(NSLayoutManager *)layoutManager lineSpacingAfterGlyphAtIndex:(NSUInteger)glyphIndex withProposedLineFragmentRect:(CGRect)rect
@@ -864,10 +757,15 @@
 #pragma mark - MenuButtons -
 -(void) TextBoxExpandbuttonClicked:(UIButton*)sender
 {
+    _vwTextOptions.hidden = NO;
+    _vwTextBoxOption.hidden = YES;
+    [self.backgroundTextView resignFirstResponder];
+    CGRect scrollframe = self.scrollView.frame;
+    scrollframe.size.height = self.view.frame.size.height-navigatonBarview.frame.size.height-32-_vwTextOptions.frame.size.height;
+    self.scrollView.frame = scrollframe;
 }
 -(void) camerabuttonClicked:(UIButton*)sender{
     _vwTextOptions.hidden = NO;
-    
     _vwTextBoxOption.hidden = NO;
     _btnFormat.hidden = YES;
     _btnFont.hidden = YES;
@@ -880,12 +778,7 @@
 -(void) materialbuttonClicked:(UIButton*)sender{
 }
 -(void) ExpandbuttonClicked:(UIButton*)sender{
-    _vwTextOptions.hidden = NO;
-    _vwTextBoxOption.hidden = YES;
-    [self.backgroundTextView resignFirstResponder];
-    CGRect scrollframe = self.scrollView.frame;
-    scrollframe.size.height = self.view.frame.size.height-navigatonBarview.frame.size.height-32-_vwTextOptions.frame.size.height;
-    self.scrollView.frame = scrollframe;
+  
 }
 #pragma mark - Slider
 
@@ -966,12 +859,8 @@
     _btnFormat.hidden = NO;
     _btnFont.hidden = NO;
     
-
     NSMutableAttributedString *titleString = [[NSMutableAttributedString alloc] initWithString:_textViewEditTextBox.text];
     [selectedTextBoxButton setAttributedTitle:titleString forState:UIControlStateNormal];
-//    let myAttribute = [ NSAttributedStringKey.font: selectedFont ]
-//    let myString = NSMutableAttributedString(string:textViewEditTextBox.text, attributes: myAttribute )
-//    selectedTextBoxButton.setAttributedTitle(myString, for: .normal)
     self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width, self.scrollView.contentSize.height);
     CGRect customTabBarframe = self.customTabBarView.frame;
     customTabBarframe.origin.y = self.view.frame.size.height-60;
@@ -1003,27 +892,13 @@
 #pragma mark - Keyboard Actions
 
 - (void)keyboardWillShow:(NSNotification *)notification {
-//    self.customTabBarView.frame.origin.y = self.view.frame.size.height-60 - keyboardSize.height
-//    self.customTabBarView.isHidden = false
-//
-//    if(self.textViewEditTextBox.isFirstResponder == true){
-//
-//        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-//            keyboardHeight = keyboardSize.height
-//
-//            showEditTextBox()
-//        }
-//
-//    }else{
-//        self.vwEditTextBox.isHidden = true
-//    }
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.3];
     CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
     keyboardHeight = keyboardSize.height;
-    CGRect f = _customTabBarView.frame;
-    f.origin.y = self.view.frame.size.height-60-keyboardSize.height;
-    _customTabBarView.frame = f;
+    CGRect viewframe = _customTabBarView.frame;
+    viewframe.origin.y = self.view.frame.size.height-60-keyboardSize.height;
+    _customTabBarView.frame = viewframe;
     if(_textViewEditTextBox.isFirstResponder == true)
     {
         keyboardHeight = keyboardSize.height;
@@ -1043,9 +918,9 @@
     CGRect scrollframe = self.scrollView.frame;
     scrollframe.size.height = self.view.frame.size.height-navigatonBarview.frame.size.height-32-_vwTextOptions.frame.size.height;
     self.scrollView.frame = scrollframe;
-    CGRect f = _customTabBarView.frame;
-    f.origin.y = self.view.frame.size.height-60;
-    _customTabBarView.frame = f;
+    CGRect customTabBarViewframe = _customTabBarView.frame;
+    customTabBarViewframe.origin.y = self.view.frame.size.height-60;
+    _customTabBarView.frame = customTabBarViewframe;
   
     _customTabBarView.hidden = YES;
     _vwTextOptions.hidden = NO;
@@ -1131,11 +1006,9 @@
     // If any text selected apply attributes to text
     if (range.length > 0)
     {
-        
         /////////////////
         NSMutableAttributedString *attributedString = [self.backgroundTextView.attributedText mutableCopy];
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
-        
         [paragraphStyle setLineSpacing:24];
         paragraphStyle.lineHeightMultiple = 50.0f;
         paragraphStyle.maximumLineHeight = 50.0f;
@@ -1184,23 +1057,17 @@ UIFont *newFont = [self fontwithBoldTrait:isBold
 // Returns a font with given attributes. For any missing parameter takes the attribute from a given dictionary
 - (UIFont *)fontwithBoldTrait:(NSNumber *)isBold italicTrait:(NSNumber *)isItalic fontName:(NSString *)fontName fontSize:(NSNumber *)fontSize fromDictionary:(NSDictionary *)dictionary
 {
-   
-
     UIFont *newFont = nil;
     UIFont *font = [dictionary objectForKey:NSFontAttributeName];
     BOOL newBold = (isBold) ? isBold.intValue : [font isBold];
     BOOL newItalic = (isItalic) ? isItalic.intValue : [font isItalic];
     CGFloat newFontSize = (fontSize) ? fontSize.floatValue : font.pointSize;
-
-    if (fontName)
-    {
+    if (fontName){
         newFont = [UIFont fontWithName:fontName size:newFontSize boldTrait:newBold italicTrait:newItalic];
     }
-    else
-    {
+    else{
         newFont = [font fontWithBoldTrait:newBold italicTrait:newItalic andSize:newFontSize];
     }
-    
     return newFont;
 }
 - (CGRect)frameOfTextAtRange:(NSRange)range
@@ -1248,25 +1115,11 @@ UIFont *newFont = [self fontwithBoldTrait:isBold
 }
 -(void)stickerviewBG:(UIImage *)img : (NSAttributedString *)attributedString
 {
-//    CGFloat calcWidth = 0.0;
-//    CGFloat calcHeight = 0.0;
-//    //calcWidth = CGFloat(200)
-//    //calcHeight = CGFloat(200)
-//    if(img.size.width > self.view.frame.size.width){
-//        calcWidth = img.size.width/4;
-//        calcHeight = img.size.height/4;
-//    }
-//    else{
-//        calcWidth = img.size.width;
-//        calcHeight = img.size.height;
-//    }
+
     self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width, self.scrollView.contentSize.height);
-    self.backgroundTextView.contentSize = CGSizeMake(self.backgroundTextView.frame.size.width, self.scrollView.contentSize.height);
-
-    _selectedView = [[LDStickerView alloc]initWithFrame:CGRectMake(self.scrollView.frame.origin.x+20, self.scrollView.frame.origin.y , 300, 300)];
+    _selectedView = [[LDStickerView alloc]initWithFrame:CGRectMake(self.scrollView.frame.origin.x+20, self.scrollView.frame.origin.y +10, 300, 300)];
+    [self.scrollView addSubview:_selectedView];
     _selectedView.accessibilityIdentifier = @"drag";
-
-//
     self.btnImageWithText = [UIButton buttonWithType:UIButtonTypeCustom];
     self.btnImageWithText.frame = CGRectMake(20, 20, _selectedView.frame.size.width-80, _selectedView.frame.size.height-40);
     [self.btnImageWithText setTitleColor:[UIColor  blackColor] forState: UIControlStateNormal];
@@ -1281,40 +1134,25 @@ UIFont *newFont = [self fontwithBoldTrait:isBold
     [self.btnImageWithText setBackgroundImage:image forState:UIControlStateNormal];
     NSMutableAttributedString *titleString = [[NSMutableAttributedString alloc] initWithString:@"Double Tap to edit"];
     [self.btnImageWithText setAttributedTitle:titleString forState:UIControlStateNormal];
-
-   // [btnImageWithText addTarget:self action:@selector(boldbuttonClicked:)forControlEvents:UIControlEventTouchUpInside];
-   // [_vwTextFormat addSubview:btnImageWithText];
     UITapGestureRecognizer *gesRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]; // Declare the Gesture.
     gesRecognizer.numberOfTapsRequired = 2;
     gesRecognizer.delegate = self;
     [_selectedView addGestureRecognizer:gesRecognizer];
-//    [_selectedView addSubview:btnImageWithText];
     [_selectedView setContentView:self.btnImageWithText];
-    [self.scrollView addSubview:_selectedView];
 
-//    [scrollView addSubview:_selectedView];
-
-   
-    
-   // self.selectedView = stickerView;
 }
 - (void)handleTap:(UIGestureRecognizer *)gestureRecognizer{
-    NSLog(@"Tapped");
     [self showEditTextBox];
     [self Textboxview];
-
     _vwEditTextBox.hidden = NO;
     selectedTextBoxButton = gestureRecognizer.view.subviews[0];
     self.textViewEditTextBox.layer.borderWidth = 1.0;
     self.textViewEditTextBox.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
-    if([selectedTextBoxButton.titleLabel.text  isEqual: @"Double Tap to edit"])
-    {
+    if([selectedTextBoxButton.titleLabel.text  isEqual: @"Double Tap to edit"]){
         self.textViewEditTextBox.text = @"";
         selectedTextBoxButton.titleLabel.text = @"";
         NSMutableAttributedString *titleString = [[NSMutableAttributedString alloc] initWithString:@""];
        [self.btnImageWithText setAttributedTitle:titleString forState:UIControlStateNormal];
-//[selectedTextBoxButton setAttributedTitle:(NSAttributedString) forState:UIControlStateNormal];
-        
     }
     self.textViewEditTextBox.text = selectedTextBoxButton.titleLabel.text;
     self.textViewEditTextBox.layer.borderWidth = 1.0;
