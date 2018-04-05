@@ -13,7 +13,7 @@
 #import "FontCollectionViewCell.h"
 #import "Editor-Swift.h"
 
-@interface EditorVC ()<UITextViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,NSLayoutManagerDelegate,UIGestureRecognizerDelegate>
+@interface EditorVC ()<UITextViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,NSLayoutManagerDelegate,UIGestureRecognizerDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 {
    
     ///////Navigation Bar
@@ -775,7 +775,59 @@
     scrollframe.size.height = self.view.frame.size.height-navigatonBarview.frame.size.height-32-_vwTextOptions.frame.size.height;
     self.scrollView.frame = scrollframe;
 }
--(void) materialbuttonClicked:(UIButton*)sender{
+- (void)takePhoto {
+    
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.allowsEditing = YES;
+    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    
+    [self presentViewController:picker animated:YES completion:NULL];
+    
+}
+- (void)selectPhoto {
+    
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.allowsEditing = YES;
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    
+    [self presentViewController:picker animated:YES completion:NULL];
+    
+    
+}
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
+
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+    
+}
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+    
+}
+-(void) materialbuttonClicked:(UIButton*)sender
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"Choose picture" preferredStyle:UIAlertControllerStyleActionSheet];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Camera" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self takePhoto];
+        // Code for Cam
+    }]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Gallery" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self selectPhoto];
+        //Code for Gallery
+    }]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }]];
+    [alert setModalPresentationStyle:UIModalPresentationPopover];
+    
+    UIPopoverPresentationController *popPresenter = [alert popoverPresentationController];
+    popPresenter.sourceView = sender;
+    popPresenter.sourceRect = sender.bounds; // You can set position of popover
+    [self presentViewController:alert animated:TRUE completion:nil];
 }
 -(void) ExpandbuttonClicked:(UIButton*)sender{
   

@@ -64,6 +64,7 @@
 		AE532D0D20457CE200B0AB87 /* moreimage.png in Resources */ = {isa = PBXBuildFile; fileRef = AE532CEF20457CE200B0AB87 /* moreimage.png */; };
 		AE532D0E20457CE200B0AB87 /* rotation.png in Resources */ = {isa = PBXBuildFile; fileRef = AE532CF020457CE200B0AB87 /* rotation.png */; };
 		AE6CD2A32060F26400DC97EB /* LDStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6CD2A22060F26400DC97EB /* LDStickerView.swift */; };
+		AEAC87DB2076035100590D46 /* PhotoEditorVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEAC87DA2076035100590D46 /* PhotoEditorVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -153,6 +154,7 @@
 		AE532CF020457CE200B0AB87 /* rotation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rotation.png; sourceTree = "<group>"; };
 		AE6CD2A22060F26400DC97EB /* LDStickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LDStickerView.swift; sourceTree = "<group>"; };
 		AE6CD2A42060F2B700DC97EB /* Editor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Editor-Bridging-Header.h"; sourceTree = "<group>"; };
+		AEAC87DA2076035100590D46 /* PhotoEditorVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditorVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -207,6 +209,7 @@
 				AE532BCB204518A500B0AB87 /* AppDelegate.m */,
 				AE532CAF2045682600B0AB87 /* EditorVC.h */,
 				AE532CB02045682600B0AB87 /* EditorVC.m */,
+				AEAC87DA2076035100590D46 /* PhotoEditorVC.swift */,
 				AE6CD2A42060F2B700DC97EB /* Editor-Bridging-Header.h */,
 				AE1DE6732048353C00833D82 /* FontCollectionViewCell.h */,
 				AE1DE6742048353C00833D82 /* FontCollectionViewCell.m */,
@@ -506,6 +509,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEAC87DB2076035100590D46 /* PhotoEditorVC.swift in Sources */,
 				AE1DE6752048353C00833D82 /* FontCollectionViewCell.m in Sources */,
 				AE532CB12045682600B0AB87 /* EditorVC.m in Sources */,
 				AE6CD2A32060F26400DC97EB /* LDStickerView.swift in Sources */,
